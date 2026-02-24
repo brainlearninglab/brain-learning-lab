@@ -4,6 +4,23 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
+<script>
+  (function(){
+    var path = window.location.pathname;
+    var dir;
+    if (path.endsWith('/')) {
+      dir = path;
+    } else if (path.lastIndexOf('.') > path.lastIndexOf('/')) {
+      dir = path.substring(0, path.lastIndexOf('/') + 1);
+    } else {
+      dir = path + '/';
+    }
+    var base = document.createElement('base');
+    base.href = dir;
+    document.head.appendChild(base);
+  })();
+</script>
+
 <title>臺師大大腦與學習實驗室</title>
 
 <link href="./css/base.css" rel="stylesheet"/><link href="./css/layout.css" rel="stylesheet"/><link href="./css/brain.css" rel="stylesheet"/><link href="./css/eeg.css" rel="stylesheet"/><link href="./css/kid.css" rel="stylesheet"/><link href="./css/panel.css" rel="stylesheet"/></head>
