@@ -1,51 +1,41 @@
-// Page scale: scales the whole #page proportionally to fit *both* viewport width & height,
-// and centers it. This avoids layout reflow; everything inside #page scales together.
-export function installPageScale({ baseWidth = 1200, minScale = 0.65 } = {}) {
+// /js/scale.js
+export function installPageScale({ maxScale = 1, safe = 40, topBias = 0 } = {}) {
   const viewport = document.getElementById("viewport");
   const page = document.getElementById("page");
-  if (!viewport || !page) return;
 
-  // Ensure a stable layout width (design width).
-  page.style.width = `${baseWidth}px`;
-
-  function measureBaseHeight() {
+  function measure() {
+    // 先清掉 transform 才量得到「原始尺寸」
     const prev = page.style.transform;
-    page.style.transform = "";
-    const rect = page.getBoundingClientRect();
+    page.style.transform = "none";
+
+    // 用 getBoundingClientRect 量實際外框（包含超出內容的元素）
+    const r = page.getBoundingClientRect();
+
     page.style.transform = prev;
-    return rect.height || page.offsetHeight || 1;
+    return { w: r.width, h: r.height };
   }
 
   function rescale() {
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const baseH = measureBaseHeight();
+    const vw = viewport.clientWidth;
+    const vh = viewport.clientHeight;
 
-    // Fit to BOTH dimensions; never upscale above 1.
-    const s = Math.max(minScale, Math.min(vw / baseWidth, vh / baseH, 1));
+    const { w, h } = measure();
 
-    // Center the scaled page in the viewport.
-    const tx = Math.max(0, (vw - baseWidth * s) / 2);
-    const ty = Math.max(0, (vh - baseH * s) / 2);
+    // 加安全邊界，避免裝飾被切（花朵、陰影、泡泡等）
+    const W = w + safe * 2;
+    const H = h + safe * 2;
 
-    page.style.transformOrigin = "top left";
+    const s = Math.min(vw / W, vh / H, maxScale);
+
+    // 置中（但不會是負值）
+    const tx = Math.max((vw - w * s) / 2, 0);
+    const ty = Math.max((vh - h * s) / 2 + topBias, 0);
+
     page.style.transform = `translate(${tx}px, ${ty}px) scale(${s})`;
     window.__PAGE_SCALE__ = s;
   }
 
-  // Recompute after images load (base height changes).
-  const imgs = page.querySelectorAll("img");
-  imgs.forEach((img) => {
-    if (!img.complete) {
-      img.addEventListener(
-        "load",
-        () => requestAnimationFrame(rescale),
-        { once: true }
-      );
-    }
-  });
-
-  window.addEventListener("resize", () => requestAnimationFrame(rescale));
-  window.addEventListener("load", () => requestAnimationFrame(rescale));
+  window.addEventListener("resize", rescale);
+  window.addEventListener("load", rescale);
   rescale();
 }
