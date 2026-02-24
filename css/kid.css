@@ -1,0 +1,14 @@
+.kidFloat{
+.kidFloat .kid{
+/* [ADD] 第二個小朋友：放在第一個右邊（大小沿用 .kid） */
+.kidFloat .kid3{ right: -220px; width: var(--kid3-width, 180px); height: auto; bottom:-60px; }
+/* [ADD] 第二個對話框：樣式沿用 .kidBubble，只調位置 */
+.kidBubble.kidBubble3{ right: -300px; animation-delay: 5s;}
+    /* ===== Kid hand-drawn speech bubble ===== */
+  .kidBubble{
+  .kidBubble::after{
+/* ===== Logo-anchored EEG (connects from logo tail to kid) ===== */
+/* Let the kid sit on the wave */
+.kid{
+/* EEG now starts exactly from anchor and extends beyond kid */
+  right: -100px;         /* extend past kid */

@@ -1,0 +1,16 @@
+/* === EEG 波形：底部 20% 區域，低對比、慢速流動（顏色 C：彩燈同色系淡色） === */
+    @keyframes eegFlow{
+/* EEG grows out from the logo tail (tweak left/translate/bottom for perfect docking) */
+/* Make the EEG clearly visible and similar thickness to the logo wave */
+/* ===== v11: Precisely anchor EEG to logo tail ===== */
+/* Visible EEG styling (match logo) */
+/* ===== v12: EEG snaps to logoTailAnchor via JS-updated CSS vars ===== */
+  --eeg-left: 50vw;     /* updated at runtime */
+  --eeg-bottom: 22px;   /* updated at runtime */
+.logoEEG{
+  left: var(--eeg-left);
+  bottom: var(--eeg-bottom);
+/* ===== EEG Flower ===== */
+.logoEEG .eegFlower{
+  stroke: url(#eegGradDeep);
+  animation: eegFlow 10s linear infinite;
