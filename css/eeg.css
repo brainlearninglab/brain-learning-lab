@@ -1,1 +1,3 @@
 /* handled in layout.css */
+/* 讓 EEG SVG 裡超出 viewBox 的花也能顯示 */
+.logoEEG { overflow: visible; }
