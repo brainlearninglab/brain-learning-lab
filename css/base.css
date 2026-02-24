@@ -1,0 +1,15 @@
+/* Global helpers for the modular GitHub Pages build */
+
+#viewport{
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#page{
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: top left;
+}
