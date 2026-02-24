@@ -472,6 +472,3 @@ body::before{
     drop-shadow(0 0 14px rgba(30,70,80,0.20));
 }
 
-/* === Overrides for page scaling: make fixed decorations scale with page === */
-#page .kidFloat{ position:absolute !important; }
-#page .logoEEG{ position:absolute !important; }
