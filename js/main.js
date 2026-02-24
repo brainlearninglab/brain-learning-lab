@@ -5,7 +5,7 @@ import { initKid } from "./kid.js";
 import { initPanel } from "./panel.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  installPageScale({ baseWidth: 1200, minScale: 0.65 });
+  installPageScale({ safe: 80, topBias: 0, maxScale: 1 });
   initPanel();
   initBrainPanelAutoRotate();
   initKid();
