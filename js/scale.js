@@ -7,36 +7,44 @@ export function installPageScale({ maxScale = 1, safe = 80, topBias = 0 } = {}) 
     const prev = page.style.transform;
     page.style.transform = "none";
 
-    // page 本體外框
+    // page 本體外框（螢幕座標 px）
     const pr = page.getBoundingClientRect();
     let minL = pr.left, minT = pr.top, maxR = pr.right, maxB = pr.bottom;
 
-    // 任何你標記為 decorBBox 的 SVG 群組都算進來
+    // 把 decorBBox 算進來（但排除 logoEEG 內的，避免你用 -900 之類把全頁撐爆）
     document.querySelectorAll(".decorBBox").forEach((node) => {
+      if (node.closest(".logoEEG")) return; // ✅ 很重要：先別讓 logoEEG 影響 page scale
+
       const svg = node.ownerSVGElement;
       if (!svg) return;
 
       const bb = node.getBBox();
-      const m = node.getCTM();
+      const m = node.getScreenCTM(); // ✅ 直接得到螢幕座標用的矩陣
       if (!m) return;
 
-      const p1 = svg.createSVGPoint(); p1.x = bb.x; p1.y = bb.y;
-      const p2 = svg.createSVGPoint(); p2.x = bb.x + bb.width; p2.y = bb.y + bb.height;
+      const pt = svg.createSVGPoint();
 
-      const q1 = p1.matrixTransform(m);
-      const q2 = p2.matrixTransform(m);
+      // ✅ 4 corners（旋轉才不會算錯）
+      const corners = [
+        { x: bb.x, y: bb.y },
+        { x: bb.x + bb.width, y: bb.y },
+        { x: bb.x, y: bb.y + bb.height },
+        { x: bb.x + bb.width, y: bb.y + bb.height },
+      ].map(({ x, y }) => {
+        pt.x = x;
+        pt.y = y;
+        const r = pt.matrixTransform(m); // ✅ 螢幕 px
+        return { x: r.x, y: r.y };
+      });
 
-      const sr = svg.getBoundingClientRect();
+      const xs = corners.map((p) => p.x);
+      const ys = corners.map((p) => p.y);
 
-      const leftPx   = sr.left + Math.min(q1.x, q2.x);
-      const rightPx  = sr.left + Math.max(q1.x, q2.x);
-      const topPx    = sr.top  + Math.min(q1.y, q2.y);
-      const bottomPx = sr.top  + Math.max(q1.y, q2.y);
-
-      minL = Math.min(minL, leftPx);
-      minT = Math.min(minT, topPx);
-      maxR = Math.max(maxR, rightPx);
-      maxB = Math.max(maxB, bottomPx);
+      // ✅ 這裡才是你現在缺的：用 xs/ys 更新 min/max
+      minL = Math.min(minL, ...xs);
+      minT = Math.min(minT, ...ys);
+      maxR = Math.max(maxR, ...xs);
+      maxB = Math.max(maxB, ...ys);
     });
 
     page.style.transform = prev;
