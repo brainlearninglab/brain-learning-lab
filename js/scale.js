@@ -50,10 +50,9 @@ export function installPageScale({ maxScale = 1, safe = 80, topBias = 0 } = {}) 
     page.style.transform = prev;
 
     return {
+      minL, minT,
       width: maxR - minL,
       height: maxB - minT,
-      padLeft: Math.max(pr.left - minL, 0),
-      padTop: Math.max(pr.top - minT, 0),
     };
   }
 
@@ -61,15 +60,15 @@ export function installPageScale({ maxScale = 1, safe = 80, topBias = 0 } = {}) 
     const vw = viewport.clientWidth;
     const vh = viewport.clientHeight;
 
-    const { width, height, padLeft, padTop } = measureIncludingDecor();
+    const { minL, minT, width, height } = measureIncludingDecor();
 
     const W = width + safe * 2;
     const H = height + safe * 2;
 
     const s = Math.min(vw / W, vh / H, maxScale);
 
-    const tx = Math.max((vw - width * s) / 2, 0) + (padLeft + safe) * s;
-    const ty = Math.max((vh - height * s) / 2 + topBias, 0) + (padTop + safe) * s;
+    const tx = (vw - W * s) / 2 + safe * s - minL * s;
+    const ty = (vh - H * s) / 2 + safe * s - minT * s + topBias;
 
     page.style.transformOrigin = "top left";
     page.style.transform = `translate(${tx}px, ${ty}px) scale(${s})`;
