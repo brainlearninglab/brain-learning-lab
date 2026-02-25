@@ -96,6 +96,33 @@ body::before{
   gap: 32px;
   align-items: start;
 }
+/* 中尺寸：稍微收斂 padding / gap */
+@media (max-width: 1100px){
+  .wrap{
+    max-width: 980px;
+    padding: 20px 20px;
+    gap: 24px;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* 小尺寸：改成單欄（大腦在上、文字在下） */
+@media (max-width: 860px){
+  .wrap{
+    grid-template-columns: 1fr;
+    max-width: 720px;
+    padding: 16px 14px;
+    gap: 18px;
+  }
+
+  .panel{
+    padding: 20px 18px;
+  }
+
+  .panel h2{
+    font-size: 24px;
+  }
+}
 
     /* 分區熱區：透明可點（不顯示區塊） */
     .region-hotspot {
@@ -185,6 +212,38 @@ body::before{
   height: 160px;
   pointer-events: none;
   z-index: 80;
+}
+@media (max-width: 860px){
+  .kidFloat{
+    right: 12px;
+    bottom: 10px;
+    width: 200px;
+    height: 140px;
+  }
+
+  .kidFloat .kid{
+    width: 60px;
+  }
+
+  .kidFloat .kid3{
+    right: -170px;
+    bottom: -45px;
+  }
+
+  .kidBubble{
+    right: -70px;
+    transform: translateX(-40px) rotate(-2deg);
+  }
+  .kidBubble.kidBubble3{
+    right: -220px;
+  }
+
+  /* EEG 如果會干擾，就在小螢幕先縮短或降低存在感 */
+  .logoEEG{
+    height: 70px;
+    right: -40px;
+    opacity: 0.85;
+  }
 }
 
     
