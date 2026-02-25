@@ -472,3 +472,15 @@ body::before{
     drop-shadow(0 0 14px rgba(30,70,80,0.20));
 }
 
+#viewport{
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
+#page{
+  position: absolute;
+  top: 0;
+  left: 0;
+  will-change: transform;
+}
